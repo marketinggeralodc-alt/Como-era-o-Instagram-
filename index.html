@@ -89,7 +89,7 @@
             cursor: grab !important; outline: 2px dashed #c5a059 !important; outline-offset: 4px;
         }
 
-        /* 5. LIGHTBOX (ZOOM) - VERSÃO MELHORADA */
+        /* 5. LIGHTBOX (ZOOM) */
         #lightboxOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(15px);
@@ -122,6 +122,14 @@
         .lightbox-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .btn-close-lb { background: #ef4444; color: white; }
         .btn-edit-lb { background: #c5a059; color: white; }
+
+        /* CUSTOM TABLE STYLE */
+        .custom-table { width: 100%; border-collapse: collapse; }
+        .custom-table th { background: #1a1a1a; color: #c5a059; padding: 15px; text-align: left; }
+        .custom-table td { padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
+        .pilar-col { font-weight: 700; width: 140px; }
+        .error-col { color: #ef4444; }
+        .success-col { color: #22c55e; font-weight: 500; }
 
     </style>
 </head>
@@ -252,31 +260,46 @@
                 </div>
             </div>
 
-            <!-- SLIDE 7: Matriz de Mudança -->
+            <!-- SLIDE 7: Matriz de Transformação (ATUALIZADO) -->
             <div class="slide-node" id="step7" style="left: 1360px; top: 4640px;">
                 <div class="slide-title">
-                    <span class="slide-subtitle" contenteditable="true">Checklist de Mudança</span>
+                    <span class="slide-subtitle" contenteditable="true">Comparativo Técnico</span>
                     <h2 contenteditable="true">Matriz de Transformação</h2>
                 </div>
-                <div style="background: #ffffff; border-radius: 16px; border: 1px solid #eae5de; overflow: hidden;">
-                    <table style="width: 100%; border-collapse: collapse;">
+                <div style="background: #ffffff; border-radius: 16px; border: 1px solid #eae5de; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
+                    <table class="custom-table">
                         <thead>
                             <tr style="background: #1a1a1a; color: #c5a059;">
-                                <th style="padding: 20px; text-align: left;">Pilar</th>
-                                <th style="padding: 20px; text-align: left;">Como Era (Amador)</th>
-                                <th style="padding: 20px; text-align: left;">Como É (Premium)</th>
+                                <th class="pilar-col">Pilar</th>
+                                <th style="padding: 15px;">Como Era (Contras)</th>
+                                <th style="padding: 15px;">Como É (Premium)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Equipa</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Imagens de Stock</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Humanização Real</td>
+                                <td class="pilar-col" contenteditable="true">Humanização</td>
+                                <td class="error-col" contenteditable="true">Não era humanizado. Rostos desconhecidos.</td>
+                                <td class="success-col" contenteditable="true">Humanização real com foco nos especialistas.</td>
                             </tr>
                             <tr>
-                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Imagens</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Escuras e Granuladas</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Fotografia HD</td>
+                                <td class="pilar-col" contenteditable="true">Conteúdo</td>
+                                <td class="error-col" contenteditable="true">Posts muito iguais. Temas desinteressantes.</td>
+                                <td class="success-col" contenteditable="true">Mix de conteúdo estratégico e de valor.</td>
+                            </tr>
+                            <tr>
+                                <td class="pilar-col" contenteditable="true">Perfil</td>
+                                <td class="error-col" contenteditable="true">Bio desatualizada.</td>
+                                <td class="success-col" contenteditable="true">Bio otimizada com links de conversão.</td>
+                            </tr>
+                            <tr>
+                                <td class="pilar-col" contenteditable="true">Visual</td>
+                                <td class="error-col" contenteditable="true">Fotos com baixa qualidade.</td>
+                                <td class="success-col" contenteditable="true">Fotografia em alta definição (HD).</td>
+                            </tr>
+                            <tr>
+                                <td class="pilar-col" contenteditable="true">Produção</td>
+                                <td class="error-col" contenteditable="true">Vídeos com áudio ruim. Iluminação ruim.</td>
+                                <td class="success-col" contenteditable="true">Captação limpa e iluminação técnica.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -335,7 +358,6 @@
 
         function navigate(d) { if (isOverview) goToSlide(currentStep); else goToSlide(currentStep + d); }
 
-        // LIGHTBOX LOGIC
         window.openLightbox = function(container) {
             if (isDragMode) return;
             const img = container.querySelector('img');
@@ -356,7 +378,6 @@
         window.changeImage = function(img) {
             const currentPath = img.getAttribute('src');
             const url = prompt("Nome do arquivo (dentro de /Imagens) ou Link Externo:", currentPath.replace('Imagens/', ''));
-            
             if(url && url.trim() !== '') {
                 const finalUrl = url.startsWith('http') ? url : 'Imagens/' + url.trim();
                 img.src = finalUrl;
@@ -364,7 +385,6 @@
             }
         };
 
-        // DRAG ENGINE
         let isDragMode = false, isDragging = false, dragTarget = null, sMX, sMY, sEX, sEY;
         function toggleDragMode() {
             isDragMode = !isDragMode;
@@ -376,7 +396,7 @@
 
         document.addEventListener('mousedown', e => {
             if(!isDragMode) return;
-            const t = e.target.closest('[contenteditable="true"], .image-container, .analysis-box, .badge');
+            const t = e.target.closest('[contenteditable="true"], .image-container, .analysis-box, .badge, .custom-table');
             if(t) {
                 isDragging = true; dragTarget = t;
                 const match = canvas.style.transform.match(/scale\(([^)]+)\)/);
