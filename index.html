@@ -38,12 +38,6 @@
 
         .slide-node.active { opacity: 1; transform: scale(1); box-shadow: 0 40px 100px rgba(197, 160, 89, 0.2); z-index: 10; cursor: default; }
 
-        .slide-node::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.05) 0%, rgba(255, 255, 255, 0) 60%);
-            z-index: 0; pointer-events: none;
-        }
-
         /* 3. TIPOGRAFIA & COMPONENTES */
         h1, h2, h3 { font-family: 'Playfair Display', serif; margin: 0; font-weight: 600; color: #1a1a1a; }
         .slide-subtitle { font-size: 14px; text-transform: uppercase; letter-spacing: 4px; color: #c5a059; font-weight: 700; margin-bottom: 5px; }
@@ -57,19 +51,22 @@
         .image-container { 
             width: 100%; height: 380px; border-radius: 20px; overflow: hidden; border: 1px solid #eae5de;
             box-shadow: 0 15px 30px rgba(0,0,0,0.05); background-color: #fafafa; position: relative;
+            transition: transform 0.3s;
         }
-        .image-container img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
+        .image-container:hover { transform: translateY(-5px); }
+        .image-container img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+
         .image-container::after { 
             content: '🔍 Clique para ampliar'; 
-            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-            font-size: 10px; color: white; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 4px;
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; color: white; background: rgba(0,0,0,0.6); padding: 5px 15px; border-radius: 50px;
             opacity: 0; transition: 0.3s; pointer-events: none;
+            backdrop-filter: blur(4px);
         }
         .image-container:hover::after { opacity: 1; }
 
         .analysis-box { background: #faf9f7; border: 1px solid #eae5de; padding: 25px; border-radius: 16px; margin-top: 15px; }
         .analysis-box h4 { font-size: 18px; margin-bottom: 10px; color: #c5a059; }
-        .analysis-box p { font-size: 15px; color: #555; line-height: 1.5; margin: 0; }
 
         .list-items { list-style: none; padding: 0; margin-top: 20px; }
         .list-items li { margin-bottom: 12px; padding-left: 35px; position: relative; font-size: 16px; line-height: 1.4; }
@@ -83,6 +80,7 @@
         .controls button:hover { background: #c5a059; color: white; }
         .controls .btn-active { background: #ef4444 !important; color: white !important; }
 
+        /* MODO DE EDIÇÃO */
         [contenteditable="true"] { outline: none; transition: 0.2s; border-radius: 4px; }
         body.drag-mode-active [contenteditable="true"], 
         body.drag-mode-active .image-container, 
@@ -91,30 +89,43 @@
             cursor: grab !important; outline: 2px dashed #c5a059 !important; outline-offset: 4px;
         }
 
-        /* 5. LIGHTBOX (VISUALIZAÇÃO AMPLIADA) */
+        /* 5. LIGHTBOX (ZOOM) - VERSÃO MELHORADA */
         #lightboxOverlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center;
-            z-index: 2000; opacity: 0; transition: opacity 0.3s ease;
+            background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; visibility: hidden; opacity: 0; transition: all 0.4s ease;
+            pointer-events: none;
         }
-        #lightboxOverlay.active { display: flex; opacity: 1; }
-        #lightboxContainer { position: relative; max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; }
-        #lightboxImg { max-width: 100%; max-height: 80vh; border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); }
+        #lightboxOverlay.active { visibility: visible; opacity: 1; pointer-events: auto; }
         
-        .lightbox-toolbar { margin-top: 20px; display: flex; gap: 15px; }
-        .lightbox-btn {
-            background: white; color: #1a1a1a; border: none; padding: 10px 20px;
-            border-radius: 50px; font-weight: 700; cursor: pointer; font-size: 13px;
-            display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        #lightboxContainer { 
+            position: relative; max-width: 90%; max-height: 90%; 
+            display: flex; flex-direction: column; align-items: center;
+            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .lightbox-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #lightboxOverlay.active #lightboxContainer { transform: scale(1); }
+        
+        #lightboxImg { 
+            max-width: 100%; max-height: 80vh; border-radius: 16px; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1);
+            object-fit: contain;
+        }
+        
+        .lightbox-toolbar { margin-top: 25px; display: flex; gap: 20px; }
+        .lightbox-btn {
+            background: white; color: #020617; border: none; padding: 12px 25px;
+            border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 12px;
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .lightbox-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .btn-close-lb { background: #ef4444; color: white; }
         .btn-edit-lb { background: #c5a059; color: white; }
 
     </style>
 </head>
-<body>
+<body id="mainBody">
 
     <div class="controls">
         <button onclick="navigate(-1)"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
@@ -124,13 +135,13 @@
         <button onclick="navigate(1)">Próximo <i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
-    <!-- LIGHTBOX OVERLAY -->
+    <!-- LIGHTBOX -->
     <div id="lightboxOverlay" onclick="closeLightbox()">
         <div id="lightboxContainer" onclick="event.stopPropagation()">
-            <img id="lightboxImg" src="" alt="Ampliação">
+            <img id="lightboxImg" src="" alt="Visualização">
             <div class="lightbox-toolbar">
-                <button class="lightbox-btn btn-edit-lb" id="lbEditBtn"><i class="fa-solid fa-pen"></i> Substituir Imagem</button>
-                <button class="lightbox-btn btn-close-lb" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i> Fechar</button>
+                <button class="lightbox-btn btn-edit-lb" id="lbEditBtn"><i class="fa-solid fa-pen-to-square"></i> Mudar Foto</button>
+                <button class="lightbox-btn btn-close-lb" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i> Fechar (ESC)</button>
             </div>
         </div>
     </div>
@@ -154,7 +165,9 @@
             <!-- SLIDE 2: Humanização -->
             <div class="slide-node" id="step2" style="left: 6160px; top: 3440px;">
                 <div class="compare-grid">
-                    <div class="image-container"><img src="Imagens/imagem1.png" onclick="openLightbox(event, this)" alt="Feed Antigo - Artes Iguais" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/feed_antigo.png+nao+encontrada'"></div>
+                    <div class="image-container" onclick="openLightbox(this)">
+                        <img src="Imagens/imagem1.png" alt="Feed Antigo" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/imagem1.png+não+encontrada'">
+                    </div>
                     <div>
                         <div class="badge badge-error" contenteditable="true">Barreira de Distância</div>
                         <h2 contenteditable="true">O Erro da Impessoalidade</h2>
@@ -177,23 +190,22 @@
                             <h4 contenteditable="true">O que estava errado?</h4>
                             <p contenteditable="true">Conteúdo focado apenas em termos técnicos ou artes frias. Falta de Instrução sobre os benefícios reais do tratamento para o dia a dia.</p>
                         </div>
-                        <ul class="list-items" style="margin-top: 15px;">
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-triangle-exclamation"></i> Posts informativos sem "gancho" emocional.</li>
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-triangle-exclamation"></i> Nenhuma prova social real.</li>
-                        </ul>
                     </div>
-                    <div class="image-container"><img src="Imagens/imagem2.jpg" onclick="openLightbox(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/post_frio.jpg+nao+encontrada'"></div>
+                    <div class="image-container" onclick="openLightbox(this)">
+                        <img src="Imagens/imagem2.jpg" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/imagem2.jpg+não+encontrada'">
+                    </div>
                 </div>
             </div>
 
             <!-- SLIDE 4: Bio e Perfil -->
             <div class="slide-node" id="step4" style="left: 6160px; top: 5840px;">
                 <div class="compare-grid">
-                    <div class="image-container"><img src="Imagens/imagem3.jpg" onclick="openLightbox(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/bio_antiga.jpg+nao+encontrada'"></div>
+                    <div class="image-container" onclick="openLightbox(this)">
+                        <img src="Imagens/imagem3.jpg" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/imagem3.jpg+não+encontrada'">
+                    </div>
                     <div>
                         <div class="badge badge-error" contenteditable="true">Perda de Conversão</div>
                         <h2 contenteditable="true">A Bio Desatualizada</h2>
-                        <p contenteditable="true" style="margin-top: 10px;">A Bio é o cartão de visita. Se estiver confusa, o paciente desiste do contacto em segundos.</p>
                         <ul class="list-items">
                             <li class="li-error" contenteditable="true"><i class="fa-solid fa-link-slash"></i> Links que não levavam ao agendamento.</li>
                             <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-exclamation"></i> Falta da localização clara das filiais.</li>
@@ -210,16 +222,15 @@
                     <h2 contenteditable="true" style="font-size: 50px;">A Nova Imagem da Clínica</h2>
                 </div>
                 <div class="compare-grid">
-                    <div class="image-container"><img src="Imagens/imagem4.jpg" onclick="openLightbox(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/novo_padrao.jpg+nao+encontrada'"></div>
+                    <div class="image-container" onclick="openLightbox(this)">
+                        <img src="Imagens/imagem4.jpg" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/imagem4.jpg+não+encontrada'">
+                    </div>
                     <div class="text-content">
-                        <ul class="list-items" style="margin: 0;">
+                        <ul class="list-items">
                             <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Alta Definição:</strong> Fim das fotos granuladas e amadoras.</li>
                             <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Identidade Visual:</strong> Uso consistente do Branco e Dourado.</li>
                             <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Humanização Real:</strong> Rostos dos dentistas e equipa.</li>
                         </ul>
-                        <div class="analysis-box" style="margin-top: 25px; border-left: 4px solid #c5a059;">
-                            <p contenteditable="true">"A estética atrai, mas a autoridade visual é o que converte o seguidor em paciente agendado."</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -230,14 +241,14 @@
                     <div>
                         <div class="badge badge-success" contenteditable="true">Imersão Profissional</div>
                         <h2 contenteditable="true">Vídeos que Vendem</h2>
-                        <p contenteditable="true" style="margin-top: 10px;">O Reels é a maior porta de entrada. A qualidade técnica aqui é inegociável.</p>
                         <ul class="list-items">
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-microphone-lines"></i> <strong>Áudio Cristalino:</strong> Uso de captação limpa sem ruído.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-microphone-lines"></i> <strong>Áudio Cristalino:</strong> Uso de captação limpa.</li>
                             <li class="li-success" contenteditable="true"><i class="fa-solid fa-sun"></i> <strong>Iluminação Profissional:</strong> Fim das sombras pesadas.</li>
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-clapperboard"></i> <strong>Edição Dinâmica:</strong> Retenção nos primeiros segundos.</li>
                         </ul>
                     </div>
-                    <div class="image-container"><img src="Imagens/imagem5.jpg" onclick="openLightbox(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/setup_video.jpg+nao+encontrada'"></div>
+                    <div class="image-container" onclick="openLightbox(this)">
+                        <img src="Imagens/imagem5.jpg" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/imagem5.jpg+não+encontrada'">
+                    </div>
                 </div>
             </div>
 
@@ -257,25 +268,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <tr>
                                 <td style="padding: 18px; font-weight: 700;" contenteditable="true">Equipa</td>
                                 <td style="padding: 18px; color: #ef4444;" contenteditable="true">Imagens de Stock</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Humanização e Autoridade</td>
+                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Humanização Real</td>
                             </tr>
-                            <tr style="border-bottom: 1px solid #f0f0f0;">
-                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Bio</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Links Quebrados</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Agendamento Facilitado</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <tr>
                                 <td style="padding: 18px; font-weight: 700;" contenteditable="true">Imagens</td>
                                 <td style="padding: 18px; color: #ef4444;" contenteditable="true">Escuras e Granuladas</td>
                                 <td style="padding: 18px; color: #22c55e;" contenteditable="true">Fotografia HD</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Vídeos</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Áudio Amador</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Qualidade de Estúdio</td>
                             </tr>
                         </tbody>
                     </table>
@@ -287,9 +288,6 @@
                 <div style="text-align: center;">
                     <h2 contenteditable="true" style="font-size: 60px; margin-bottom: 20px;">A Percepção de Valor <span>Muda Tudo</span></h2>
                     <p contenteditable="true" style="font-size: 20px; max-width: 800px; margin: 0 auto; color: #666;">Quando o seu Instagram parece premium, o seu paciente deseja o seu resultado antes mesmo de saber o preço.</p>
-                    <div style="margin-top: 50px;">
-                        <i class="fa-solid fa-award fa-4x" style="color: #c5a059;"></i>
-                    </div>
                 </div>
             </div>
 
@@ -298,6 +296,10 @@
 
     <script>
         const canvas = document.getElementById('canvas');
+        const overlay = document.getElementById('lightboxOverlay');
+        const lbImg = document.getElementById('lightboxImg');
+        const lbEditBtn = document.getElementById('lbEditBtn');
+        
         const steps = [
             { cx: 5000, cy: 5000 }, { cx: 6800, cy: 3800 },
             { cx: 8000, cy: 5000 }, { cx: 6800, cy: 6200 },
@@ -307,6 +309,7 @@
         
         let currentStep = 0;
         let isOverview = false;
+        let activeImageElement = null;
 
         function goToSlide(index) {
             isOverview = false;
@@ -332,23 +335,43 @@
 
         function navigate(d) { if (isOverview) goToSlide(currentStep); else goToSlide(currentStep + d); }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.target.isContentEditable) return;
-            if (e.key === 'ArrowRight') navigate(1);
-            if (e.key === 'ArrowLeft') navigate(-1);
-            if (e.key === 'Escape') {
-                if(document.getElementById('lightboxOverlay').classList.contains('active')) closeLightbox();
-                else showOverview();
-            }
-        });
+        // LIGHTBOX LOGIC
+        window.openLightbox = function(container) {
+            if (isDragMode) return;
+            const img = container.querySelector('img');
+            activeImageElement = img;
+            lbImg.src = img.src;
+            overlay.classList.add('active');
+            
+            lbEditBtn.onclick = (e) => {
+                e.stopPropagation();
+                changeImage(activeImageElement);
+            };
+        };
 
+        window.closeLightbox = function() {
+            overlay.classList.remove('active');
+        };
+
+        window.changeImage = function(img) {
+            const currentPath = img.getAttribute('src');
+            const url = prompt("Nome do arquivo (dentro de /Imagens) ou Link Externo:", currentPath.replace('Imagens/', ''));
+            
+            if(url && url.trim() !== '') {
+                const finalUrl = url.startsWith('http') ? url : 'Imagens/' + url.trim();
+                img.src = finalUrl;
+                if(overlay.classList.contains('active')) lbImg.src = finalUrl;
+            }
+        };
+
+        // DRAG ENGINE
         let isDragMode = false, isDragging = false, dragTarget = null, sMX, sMY, sEX, sEY;
         function toggleDragMode() {
             isDragMode = !isDragMode;
             document.body.classList.toggle('drag-mode-active', isDragMode);
             const btn = document.getElementById('dragBtn');
             btn.classList.toggle('btn-active', isDragMode);
-            btn.innerHTML = isDragMode ? '<i class="fa-solid fa-hand"></i> Fixar' : '<i class="fa-solid fa-arrows-up-down-left-right"></i> Arrastar';
+            btn.innerHTML = isDragMode ? '<i class="fa-solid fa-hand"></i> Fixar' : '<i class="fa-solid fa-arrows-up-down-left-right"></i> Layout';
         }
 
         document.addEventListener('mousedown', e => {
@@ -357,7 +380,8 @@
             if(t) {
                 isDragging = true; dragTarget = t;
                 const match = canvas.style.transform.match(/scale\(([^)]+)\)/);
-                dragTarget.dataset.scale = match ? parseFloat(match[1]) : 1;
+                const sc = match ? parseFloat(match[1]) : 1;
+                dragTarget.dataset.scale = sc;
                 sMX = e.clientX; sMY = e.clientY;
                 sEX = parseFloat(t.getAttribute('data-x')) || 0;
                 sEY = parseFloat(t.getAttribute('data-y')) || 0;
@@ -375,47 +399,15 @@
 
         document.addEventListener('mouseup', () => { isDragging = false; dragTarget = null; });
 
-        // 6. LOGICA DO LIGHTBOX (AMPLIAÇÃO)
-        let currentTargetImg = null;
-
-        window.openLightbox = function(e, img) {
-            e.stopPropagation();
-            if (isDragMode) return; // Se estiver a arrastar, não amplia
-
-            currentTargetImg = img;
-            const overlay = document.getElementById('lightboxOverlay');
-            const lbImg = document.getElementById('lightboxImg');
-            
-            lbImg.src = img.src;
-            overlay.style.display = 'flex';
-            setTimeout(() => overlay.classList.add('active'), 10);
-
-            // Configura o botão de edição dentro do lightbox
-            document.getElementById('lbEditBtn').onclick = () => {
-                changeImage(null, currentTargetImg);
-                lbImg.src = currentTargetImg.src; // Atualiza o zoom na hora
-            };
-        };
-
-        window.closeLightbox = function() {
-            const overlay = document.getElementById('lightboxOverlay');
-            overlay.classList.remove('active');
-            setTimeout(() => overlay.style.display = 'none', 300);
-        };
-
-        window.changeImage = function(e, img) {
-            if(e) e.stopPropagation();
-            const currentPath = img.getAttribute('src');
-            const url = prompt("Nome do arquivo dentro da pasta /Imagens (ex: minha_foto.png):", currentPath.replace('Imagens/', ''));
-            
-            if(url && url.trim() !== '') {
-                if(url.startsWith('http')) {
-                    img.src = url;
-                } else {
-                    img.src = 'Imagens/' + url.trim();
-                }
+        window.addEventListener('keydown', (e) => {
+            if (e.target.isContentEditable) return;
+            if (e.key === 'ArrowRight') navigate(1);
+            if (e.key === 'ArrowLeft') navigate(-1);
+            if (e.key === 'Escape') {
+                if(overlay.classList.contains('active')) closeLightbox();
+                else showOverview();
             }
-        };
+        });
 
         async function downloadSlides() {
             const btn = event.target;
