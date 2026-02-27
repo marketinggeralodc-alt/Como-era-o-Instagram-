@@ -48,7 +48,6 @@
         h1, h2, h3 { font-family: 'Playfair Display', serif; margin: 0; font-weight: 600; color: #1a1a1a; }
         .slide-subtitle { font-size: 14px; text-transform: uppercase; letter-spacing: 4px; color: #c5a059; font-weight: 700; margin-bottom: 5px; }
         
-        /* Badges de Erro e Sucesso */
         .badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
         .badge-error { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
         .badge-success { background: #f0fdf4; color: #22c55e; border: 1px solid #bbf7d0; }
@@ -57,16 +56,21 @@
         
         .image-container { 
             width: 100%; height: 380px; border-radius: 20px; overflow: hidden; border: 1px solid #eae5de;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.05); background-color: #fafafa;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05); background-color: #fafafa; position: relative;
         }
         .image-container img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: 0.3s; }
-        .image-container img:hover { opacity: 0.8; }
+        .image-container::after { 
+            content: '📸 Clica para vincular foto da pasta /Imagens'; 
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; color: white; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 4px;
+            opacity: 0; transition: 0.3s; pointer-events: none;
+        }
+        .image-container:hover::after { opacity: 1; }
 
         .analysis-box { background: #faf9f7; border: 1px solid #eae5de; padding: 25px; border-radius: 16px; margin-top: 15px; }
         .analysis-box h4 { font-size: 18px; margin-bottom: 10px; color: #c5a059; }
         .analysis-box p { font-size: 15px; color: #555; line-height: 1.5; margin: 0; }
 
-        /* Estilo das Listas */
         .list-items { list-style: none; padding: 0; margin-top: 20px; }
         .list-items li { margin-bottom: 12px; padding-left: 35px; position: relative; font-size: 16px; line-height: 1.4; }
         .list-items li i { position: absolute; left: 0; top: 3px; font-size: 18px; }
@@ -79,7 +83,6 @@
         .controls button:hover { background: #c5a059; color: white; }
         .controls .btn-active { background: #ef4444 !important; color: white !important; }
 
-        /* EDIÇÃO E DRAG */
         [contenteditable="true"] { outline: none; transition: 0.2s; border-radius: 4px; }
         body.drag-mode-active [contenteditable="true"], 
         body.drag-mode-active .image-container, 
@@ -102,7 +105,6 @@
     <div id="viewport">
         <div id="canvas">
             
-            <!-- LINHAS DOURADAS DE CONEXÃO -->
             <svg width="10000" height="10000" style="position: absolute; top:0; left:0; pointer-events:none; z-index: 0;">
                 <path d="M 5000 5000 L 6800 3800 L 8000 5000 L 6800 6200 L 5000 7200 L 3200 6200 L 2000 5000 L 3200 3800 Z" fill="none" stroke="#c5a059" stroke-width="2" stroke-dasharray="10 10" opacity="0.3"/>
             </svg>
@@ -119,14 +121,14 @@
             <!-- SLIDE 2: Humanização -->
             <div class="slide-node" id="step2" style="left: 6160px; top: 3440px;">
                 <div class="compare-grid">
-                    <div class="image-container"><img src="image_5.png" onclick="changeImage(event, this)" alt="Feed Antigo - Artes Iguais"></div>
+                    <div class="image-container"><img src="Imagens/feed_antigo.png" onclick="changeImage(event, this)" alt="Feed Antigo - Artes Iguais" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/feed_antigo.png+nao+encontrada'"></div>
                     <div>
                         <div class="badge badge-error" contenteditable="true">Barreira de Distância</div>
                         <h2 contenteditable="true">O Erro da Impessoalidade</h2>
                         <ul class="list-items">
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Rostos Desconhecidos:</strong> Excesso de bancos de imagem (stock photos) que não geram confiança.</li>
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Posts Repetitivos:</strong> Feed que parece um panfleto de farmácia, sem alma.</li>
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Falta de Bastidores:</strong> O paciente não conhece a equipe antes de chegar.</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Rostos Desconhecidos:</strong> Excesso de artes genéricas que não geram confiança.</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Posts Repetitivos:</strong> Feed que parece um panfleto, sem alma.</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-xmark"></i> <strong>Falta de Bastidores:</strong> O paciente não vê quem são os especialistas.</li>
                         </ul>
                     </div>
                 </div>
@@ -140,29 +142,29 @@
                         <h2 contenteditable="true">Temas que Não Conectam</h2>
                         <div class="analysis-box">
                             <h4 contenteditable="true">O que estava errado?</h4>
-                            <p contenteditable="true">Conteúdo focado apenas em "venda direta" ou termos técnicos que o paciente não entende. Falta de educação sobre os benefícios reais do tratamento.</p>
+                            <p contenteditable="true">Conteúdo focado apenas em termos técnicos ou artes frias. Falta de educação sobre os benefícios reais do tratamento para o dia a dia.</p>
                         </div>
                         <ul class="list-items" style="margin-top: 15px;">
                             <li class="li-error" contenteditable="true"><i class="fa-solid fa-triangle-exclamation"></i> Posts informativos sem "gancho" emocional.</li>
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-triangle-exclamation"></i> Nenhuma prova social (Transformações).</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-triangle-exclamation"></i> Nenhuma prova social real.</li>
                         </ul>
                     </div>
-                    <div class="image-container"><img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800&auto=format&fit=crop" onclick="changeImage(event, this)"></div>
+                    <div class="image-container"><img src="Imagens/post_frio.jpg" onclick="changeImage(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/post_frio.jpg+nao+encontrada'"></div>
                 </div>
             </div>
 
             <!-- SLIDE 4: Bio e Perfil -->
             <div class="slide-node" id="step4" style="left: 6160px; top: 5840px;">
                 <div class="compare-grid">
-                    <div class="image-container"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=800&auto=format&fit=crop" onclick="changeImage(event, this)"></div>
+                    <div class="image-container"><img src="Imagens/bio_antiga.jpg" onclick="changeImage(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/bio_antiga.jpg+nao+encontrada'"></div>
                     <div>
                         <div class="badge badge-error" contenteditable="true">Perda de Conversão</div>
                         <h2 contenteditable="true">A Bio Desatualizada</h2>
-                        <p contenteditable="true" style="margin-top: 10px;">A Bio é o cartão de visita. Se estiver confusa, o paciente desiste do contato em segundos.</p>
+                        <p contenteditable="true" style="margin-top: 10px;">A Bio é o cartão de visita. Se estiver confusa, o paciente desiste do contacto em segundos.</p>
                         <ul class="list-items">
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-link-slash"></i> Links quebrados ou inexistentes.</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-link-slash"></i> Links que não levavam ao agendamento.</li>
                             <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-exclamation"></i> Falta da localização clara das filiais.</li>
-                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-exclamation"></i> Destaques (Highlights) sem organização.</li>
+                            <li class="li-error" contenteditable="true"><i class="fa-solid fa-circle-exclamation"></i> Destaques sem organização estratégica.</li>
                         </ul>
                     </div>
                 </div>
@@ -175,12 +177,12 @@
                     <h2 contenteditable="true" style="font-size: 50px;">A Nova Imagem da Clínica</h2>
                 </div>
                 <div class="compare-grid">
-                    <div class="image-container"><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=800&auto=format&fit=crop" onclick="changeImage(event, this)"></div>
+                    <div class="image-container"><img src="Imagens/novo_padrao.jpg" onclick="changeImage(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/novo_padrao.jpg+nao+encontrada'"></div>
                     <div class="text-content">
                         <ul class="list-items" style="margin: 0;">
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Alta Definição:</strong> Fim das fotos granuladas e escuras.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Alta Definição:</strong> Fim das fotos granuladas e amadoras.</li>
                             <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Identidade Visual:</strong> Uso consistente do Branco e Dourado.</li>
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Humanização Real:</strong> Rostos dos dentistas e pacientes felizes.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-check-double"></i> <strong>Humanização Real:</strong> Rostos dos dentistas e equipa.</li>
                         </ul>
                         <div class="analysis-box" style="margin-top: 25px; border-left: 4px solid #c5a059;">
                             <p contenteditable="true">"A estética atrai, mas a autoridade visual é o que converte o seguidor em paciente agendado."</p>
@@ -195,14 +197,14 @@
                     <div>
                         <div class="badge badge-success" contenteditable="true">Imersão Profissional</div>
                         <h2 contenteditable="true">Vídeos que Vendem</h2>
-                        <p contenteditable="true" style="margin-top: 10px;">O Reels é a maior porta de entrada de novos pacientes. A qualidade técnica aqui é inegociável.</p>
+                        <p contenteditable="true" style="margin-top: 10px;">O Reels é a maior porta de entrada. A qualidade técnica aqui é inegociável.</p>
                         <ul class="list-items">
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-microphone-lines"></i> <strong>Áudio Cristalino:</strong> Uso de microfones ou redução de ruído.</li>
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-sun"></i> <strong>Iluminação 3 Pontos:</strong> Fim das sombras pesadas no rosto.</li>
-                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-clapperboard"></i> <strong>Edição Dinâmica:</strong> Retenção nos primeiros 3 segundos.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-microphone-lines"></i> <strong>Áudio Cristalino:</strong> Uso de captação limpa sem ruído.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-sun"></i> <strong>Iluminação Profissional:</strong> Fim das sombras pesadas.</li>
+                            <li class="li-success" contenteditable="true"><i class="fa-solid fa-clapperboard"></i> <strong>Edição Dinâmica:</strong> Retenção nos primeiros segundos.</li>
                         </ul>
                     </div>
-                    <div class="image-container"><img src="https://images.unsplash.com/photo-1492691523567-6119e289dffb?q=80&w=800&auto=format&fit=crop" onclick="changeImage(event, this)"></div>
+                    <div class="image-container"><img src="Imagens/setup_video.jpg" onclick="changeImage(event, this)" onerror="this.src='https://via.placeholder.com/800x450?text=Imagens/setup_video.jpg+nao+encontrada'"></div>
                 </div>
             </div>
 
@@ -224,23 +226,23 @@
                         <tbody>
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td style="padding: 18px; font-weight: 700;" contenteditable="true">Equipa</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Rostos Desconhecidos</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Humanização e Bastidores</td>
+                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Imagens de Stock</td>
+                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Humanização e Autoridade</td>
                             </tr>
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td style="padding: 18px; font-weight: 700;" contenteditable="true">Bio</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Desatualizada / Links Off</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">CTA Clara e Links Ativos</td>
+                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Links Quebrados</td>
+                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Agendamento Facilitado</td>
                             </tr>
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td style="padding: 18px; font-weight: 700;" contenteditable="true">Imagens</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Baixa Resolução / Escuras</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Fotografia HD / Iluminação</td>
+                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Escuras e Granuladas</td>
+                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Fotografia HD</td>
                             </tr>
                             <tr>
-                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Reels</td>
-                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Áudio Ruim / Sem Edição</td>
-                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Áudio Limpo / Edição Ágil</td>
+                                <td style="padding: 18px; font-weight: 700;" contenteditable="true">Vídeos</td>
+                                <td style="padding: 18px; color: #ef4444;" contenteditable="true">Áudio Amador</td>
+                                <td style="padding: 18px; color: #22c55e;" contenteditable="true">Qualidade de Estúdio</td>
                             </tr>
                         </tbody>
                     </table>
@@ -251,7 +253,7 @@
             <div class="slide-node" id="step8" style="left: 2560px; top: 3440px;">
                 <div style="text-align: center;">
                     <h2 contenteditable="true" style="font-size: 60px; margin-bottom: 20px;">A Percepção de Valor <span>Muda Tudo</span></h2>
-                    <p contenteditable="true" style="font-size: 20px; max-width: 800px; margin: 0 auto; color: #666;">Quando o seu Instagram parece caro, o seu paciente não questiona o preço do seu orçamento. Ele deseja o seu resultado.</p>
+                    <p contenteditable="true" style="font-size: 20px; max-width: 800px; margin: 0 auto; color: #666;">Quando o seu Instagram parece premium, o seu paciente deseja o seu resultado antes mesmo de saber o preço.</p>
                     <div style="margin-top: 50px;">
                         <i class="fa-solid fa-award fa-4x" style="color: #c5a059;"></i>
                     </div>
@@ -262,7 +264,6 @@
     </div>
 
     <script>
-        // MOTOR DE NAVEGAÇÃO PREZI
         const canvas = document.getElementById('canvas');
         const steps = [
             { cx: 5000, cy: 5000 }, { cx: 6800, cy: 3800 },
@@ -305,7 +306,6 @@
             if (e.key === 'Escape') showOverview();
         });
 
-        // DRAG & DROP ENGINE
         let isDragMode = false, isDragging = false, dragTarget = null, sMX, sMY, sEX, sEY;
         function toggleDragMode() {
             isDragMode = !isDragMode;
@@ -339,14 +339,22 @@
 
         document.addEventListener('mouseup', () => { isDragging = false; dragTarget = null; });
 
-        // MUDAR IMAGENS
+        // MUDAR IMAGENS - AGORA COM CAMINHOS RELATIVOS AO GITHUB
         window.changeImage = function(e, img) {
             e.stopPropagation();
-            const url = prompt("Cole o link (URL) da imagem real da clínica:", img.src);
-            if(url && url.trim() !== '') img.src = url;
+            const currentPath = img.getAttribute('src');
+            const url = prompt("Nome do arquivo dentro da pasta /Imagens (ex: minha_foto.png):", currentPath.replace('Imagens/', ''));
+            
+            if(url && url.trim() !== '') {
+                // Se o utilizador colar um link externo, usa o link. Se for só o nome, usa a pasta.
+                if(url.startsWith('http')) {
+                    img.src = url;
+                } else {
+                    img.src = 'Imagens/' + url.trim();
+                }
+            }
         };
 
-        // EXPORTAR
         async function downloadSlides() {
             const btn = event.target;
             const oldTxt = btn.innerHTML;
